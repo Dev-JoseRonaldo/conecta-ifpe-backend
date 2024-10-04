@@ -6,6 +6,8 @@ import { User } from '../users/users.entity';
 
 @Injectable()
 export class AuthService {
+  private tokenBlacklist = new Set<string>(); // Blacklist de tokens
+
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
@@ -25,5 +27,15 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  // Adicionar token à blacklist
+  async addToBlacklist(token: string): Promise<void> {
+    this.tokenBlacklist.add(token);
+  }
+
+  // Verificar se o token está na blacklist
+  isTokenBlacklisted(token: string): boolean {
+    return this.tokenBlacklist.has(token);
   }
 }
