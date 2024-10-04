@@ -14,4 +14,25 @@ export class User {
 
   @Column()
   role: UserRole;
+
+  @Column({ nullable: true }) // Permite que este campo seja nulo
+  siape: string;
+
+  @Column()
+  fullName: string;
+
+  @Column({ unique: true })
+  cpf: string;
+
+  @Column()
+  birthDate: Date;
+
+  @Column({ unique: true })
+  email: string;
+
+  @Column()
+  campus: string;
+
+  @Column({ nullable: true })
+  phone: string;
 }
