@@ -10,17 +10,17 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
     return this.prisma.user.create({
       data: {
-        username: createUserDto.username, // Utilize o DTO
-        password: createUserDto.password, // Utilize o DTO
-        role: UserRole.CONVIDADO, // Role padrão ao se cadastrar
-        desiredRole: createUserDto.desiredRole, // Usando a role desejada do DTO
-        siape: createUserDto.siape, // Utilize o DTO
-        fullName: createUserDto.fullName, // Utilize o DTO
-        email: createUserDto.email, // Utilize o DTO
-        campus: createUserDto.campus, // Utilize o DTO
-        phone: createUserDto.phone, // Utilize o DTO
-        birthDate: new Date(createUserDto.birthDate), // Utilize o DTO
-        cpf: createUserDto.cpf, // Utilize o DTO
+        username: createUserDto.username,
+        password: createUserDto.password,
+        role: UserRole.CONVIDADO,
+        desiredRole: createUserDto.desiredRole,
+        siape: createUserDto.siape || null,
+        fullName: createUserDto.fullName,
+        email: createUserDto.email,
+        campus: createUserDto.campus,
+        phone: createUserDto.phone,
+        birthDate: new Date(createUserDto.birthDate),
+        cpf: createUserDto.cpf,
       },
     });
   }
