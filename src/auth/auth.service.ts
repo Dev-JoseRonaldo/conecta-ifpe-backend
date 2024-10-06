@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { User } from '../users/users.entity';
+import { User } from '@prisma/client'; // Importando a definição de User do Prisma
 
 @Injectable()
 export class AuthService {
@@ -16,7 +15,7 @@ export class AuthService {
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.usersService.findOne(username);
     if (user && user.password === password) {
-      const { password, ...result } = user; // Não retornar a senha
+      const { password, ...result } = user;
       return result;
     }
     return null;
