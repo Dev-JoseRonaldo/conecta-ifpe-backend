@@ -10,20 +10,20 @@ import {
   Get,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, UserRole } from './dto/create-user.dto';
-import { User } from './users.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { User } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { AuthService } from 'src/auth/auth.service';
+import { UserRole } from '@prisma/client';
 
 @Controller('users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
-    private readonly authService: AuthService, // Injetando AuthService para lidar com a blacklist
+    private readonly authService: AuthService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   async create(
     @Body() createUserDto: CreateUserDto,
@@ -31,6 +31,7 @@ export class UsersController {
   ): Promise<User> {
     const currentUser = req.user;
 
+    // Verifica se o usuário atual é administrador e se está tentando criar um novo administrador
     if (
       createUserDto.role === UserRole.ADMIN &&
       currentUser.role !== UserRole.ADMIN
@@ -41,13 +42,15 @@ export class UsersController {
       );
     }
 
+    // Chama o serviço para criar o usuário
     return this.usersService.create(createUserDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Roles(UserRole.ADMIN)
   @Get(':username')
-  async findOne(@Param('username') username: string): Promise<User> {
+  async findOne(@Param('username') username: string): Promise<User | null> {
+    // Chama o serviço para encontrar um usuário pelo username
     return this.usersService.findOne(username);
   }
 

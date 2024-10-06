@@ -1,22 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { User } from './users.entity';
+import { User, UserRole } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const user = this.usersRepository.create(createUserDto);
-    return this.usersRepository.save(user);
+    return this.prisma.user.create({
+      data: {
+        username: createUserDto.username, // Utilize o DTO
+        password: createUserDto.password, // Utilize o DTO
+        role: UserRole.CONVIDADO, // Role padrão ao se cadastrar
+        desiredRole: createUserDto.desiredRole, // Usando a role desejada do DTO
+        siape: createUserDto.siape, // Utilize o DTO
+        fullName: createUserDto.fullName, // Utilize o DTO
+        email: createUserDto.email, // Utilize o DTO
+        campus: createUserDto.campus, // Utilize o DTO
+        phone: createUserDto.phone, // Utilize o DTO
+        birthDate: new Date(createUserDto.birthDate), // Utilize o DTO
+        cpf: createUserDto.cpf, // Utilize o DTO
+      },
+    });
   }
 
-  async findOne(username: string): Promise<User> {
-    return this.usersRepository.findOne({ where: { username } });
+  async findOne(username: string): Promise<User | null> {
+    return this.prisma.user.findUnique({
+      where: { username },
+    });
   }
 }
