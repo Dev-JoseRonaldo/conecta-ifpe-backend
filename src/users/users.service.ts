@@ -30,4 +30,8 @@ export class UsersService {
       where: { username },
     });
   }
+
+  async findOneByEmail(email: string): Promise<User> {
+    return this.prisma.user.findUnique({ where: { email } });
+  }
 }
