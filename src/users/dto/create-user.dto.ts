@@ -1,11 +1,12 @@
-import { IsString, IsEnum } from 'class-validator';
+import {
+  IsString,
+  IsEnum,
+  IsEmail,
+  IsOptional,
+  IsDateString,
+} from 'class-validator';
 
-export enum UserRole {
-  ALUNO = 'aluno',
-  ASSISTENTE_SOCIAL = 'assistente_social',
-  FINANCEIRO = 'financeiro',
-  ADMIN = 'admin',
-}
+import { UserRole as PrismaUserRole, UserRole } from '@prisma/client'; // Importando a enum do Prisma
 
 export class CreateUserDto {
   @IsString()
@@ -14,6 +15,33 @@ export class CreateUserDto {
   @IsString()
   password: string;
 
+  @IsEnum(PrismaUserRole)
+  role: PrismaUserRole;
+
   @IsEnum(UserRole)
-  role: UserRole;
+  desiredRole: UserRole;
+
+  @IsOptional()
+  @IsString()
+  siape?: string;
+
+  @IsString()
+  fullName: string;
+
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  campus: string;
+
+  @IsString()
+  @IsOptional()
+  phone?: string;
+
+  @IsDateString()
+  birthDate: string;
+
+  @IsString()
+  cpf: string;
 }
